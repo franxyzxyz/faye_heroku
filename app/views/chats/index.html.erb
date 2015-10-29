@@ -1,0 +1,8 @@
+<h1>Chat</h1>
+<div id="chat"></div>
+
+<%= form_tag('/chats', method: "post") do %>
+  <%= label_tag 'message' %>
+  <%= text_field_tag 'message' %>
+  <%= submit_tag "Send" %>
+<% end %>
