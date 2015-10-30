@@ -3,9 +3,10 @@ window.client = new Faye.Client('/faye');
 $(document).ready(function(){
   // define elements
   chatBox = $("#chat");
-  formBox = $('form');
+  formBox = $('#new-message');
   formBoxInputs = formBox.find('input');
-  messageInput = formBox.find('#message');
+  newMessageInput = formBox.find('#message');
+  deleteBox = $('#delete-messages');
 
   var init = function () {
     scrollHeight = chatBox[0].scrollHeight;
@@ -16,10 +17,16 @@ $(document).ready(function(){
 
   // subscribe to client
   client.subscribe('/comments', function(payload) {
-    console.log("message recieved", payload);
-    chatBox.append("<p><span>" + payload.created_at + ": </span>" + payload.message + "</p>");
-    scrollHeight = chatBox[0].scrollHeight;
-    chatBox.scrollTop(scrollHeight);
+    if (payload.action == "create"){
+      console.log("message recieved", payload);
+      chatBox.append("<p><span>" + payload.created_at + ": </span>" + payload.message + "</p>");
+      scrollHeight = chatBox[0].scrollHeight;
+      chatBox.scrollTop(scrollHeight);
+    } else {
+      console.log("deleting all history");
+      chatBox.html("");
+      chatBox.append("<p>DELETED CHAT HISTORY</p>");
+    }
   });
 
   // when user submit message, if success then publish to channel
@@ -40,10 +47,11 @@ $(document).ready(function(){
       success: function(response, status){
         console.log(response);
         formBoxInputs.removeAttr("disabled");
-        messageInput.val("");
-        messageInput.focus();
+        newMessageInput.val("");
+        newMessageInput.focus();
 
         client.publish('/comments', {
+          action: "create",
           message: response.message,
           created_at: response.created_at
         });
@@ -53,6 +61,21 @@ $(document).ready(function(){
         formBoxInputs.removeAttr("disabled");
       }
     });
+  });
 
+  deleteBox.on("submit", function(e){
+    e.preventDefault();
+
+    $.ajax({
+      url: '/',
+      method: "DELETE",
+      success: function(response, status){
+        console.log(response);
+
+        client.publish('/comments', {
+          action: "delete"
+        });
+      }
+    });
   });
 });

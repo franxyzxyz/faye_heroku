@@ -5,8 +5,12 @@
   <% end %>
 </div>
 
-<%= form_tag('/', method: "post") do %>
+<%= form_tag('/', {method: "post", id: "new-message"}) do %>
   <%= label_tag 'message' %>
   <%= text_field_tag 'message' %>
   <%= submit_tag "Send" %>
+<% end %>
+
+<%= form_tag('/', {method: "delete", id: "delete-messages"}) do %>
+  <%= submit_tag "Delete All History" %>
 <% end %>

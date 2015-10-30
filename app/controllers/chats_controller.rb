@@ -12,6 +12,12 @@ class ChatsController < ApplicationController
     end
   end
 
+  def destroy
+    @chats = Chat.all
+    @chats.destroy_all
+    render json: {success: true}, status: 200
+  end
+
   private
 
   def chat_params
