@@ -1,7 +1,11 @@
 <h1>Chat</h1>
-<div id="chat"></div>
+<div id="chat">
+  <% @history.each do |message| %>
+    <p><span><%= message.created_at.httpdate %>:</span> <%= message.message %></p>
+  <% end %>
+</div>
 
-<%= form_tag('/chats', method: "post") do %>
+<%= form_tag('/', method: "post") do %>
   <%= label_tag 'message' %>
   <%= text_field_tag 'message' %>
   <%= submit_tag "Send" %>

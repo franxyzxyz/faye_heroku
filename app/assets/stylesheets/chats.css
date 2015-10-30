@@ -1,0 +1,14 @@
+body {
+  text-align: center;
+}
+
+#chat {
+  text-align: left;
+  height: 200px;
+  border: 1px solid black;
+  overflow-y: auto;
+}
+
+#chat > p > span{
+  color: blue;
+}
