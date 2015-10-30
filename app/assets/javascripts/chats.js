@@ -1,8 +1,18 @@
 window.client = new Faye.Client('/faye');
 
 $(document).ready(function(){
-  // define chat element
+  // define elements
   chatBox = $("#chat");
+  formBox = $('form');
+  formBoxInputs = formBox.find('input');
+  messageInput = formBox.find('#message');
+
+  var init = function () {
+    scrollHeight = chatBox[0].scrollHeight;
+    chatBox.scrollTop(scrollHeight);
+  };
+
+  init();
 
   // subscribe to client
   client.subscribe('/comments', function(payload) {
@@ -13,8 +23,9 @@ $(document).ready(function(){
   });
 
   // when user submit message, if success then publish to channel
-  $('form').on("submit", function(e){
+  formBox.on("submit", function(e){
     e.preventDefault();
+    formBoxInputs.attr("disabled", true);
 
     message = $('#message').val();
 
@@ -28,6 +39,10 @@ $(document).ready(function(){
       },
       success: function(response, status){
         console.log(response);
+        formBoxInputs.removeAttr("disabled");
+        messageInput.val("");
+        messageInput.focus();
+
         client.publish('/comments', {
           message: response.message,
           created_at: response.created_at
@@ -35,6 +50,7 @@ $(document).ready(function(){
       },
       error: function(response, status){
         console.log(response);
+        formBoxInputs.removeAttr("disabled");
       }
     });
 
