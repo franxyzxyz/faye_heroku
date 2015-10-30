@@ -2,6 +2,8 @@ Rails.application.routes.draw do
 
   root 'chats#index'
 
+  post '/', to: 'chats#create'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

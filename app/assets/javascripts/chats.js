@@ -7,11 +7,29 @@ $(document).ready(function(){
     $("#chat").append("<p>"+payload.message+"</p>");
   });
 
-  // when user submit message, publish to channel
+  // when user submit message, if success then publish to channel
   $('form').on("submit", function(e){
     e.preventDefault();
-    publisher = client.publish('/comments', {
-      message: $('#message').val()
+
+    message = $('#message').val();
+
+    $.ajax({
+      url: '/',
+      method: 'POST',
+      data: {
+        chat: {
+          message: message
+        }
+      },
+      success: function(response, status){
+        client.publish('/comments', {
+          message: message
+        });
+      },
+      error: function(response, status){
+        console.log(response);
+      }
     });
+
   });
 });
